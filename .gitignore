@@ -1,5 +1,14 @@
 build/
+build-*/
 cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Testing/
+*.exe
+*.obj
+*.a
+*.lib
+*.pdb
 *.user
 *.swp
 *.swo
