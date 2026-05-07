@@ -1,0 +1,84 @@
+# dlms-cosem Requirements
+
+## 1. Scope
+
+The COSEM layer owns the object model and server resource registry. It is used
+by future server-side xDLMS dispatch to resolve logical-name attribute and
+method requests to registered COSEM objects.
+
+The layer shall:
+
+- model a physical device containing one or more logical devices;
+- model each logical device as a collection of COSEM objects;
+- identify COSEM objects by class id, version, and six-byte logical name;
+- provide an object registry lookup by logical name and class id;
+- expose attribute read/write and method invoke contracts;
+- model per-association attribute and method access rights;
+- provide association-view metadata containing visible objects and access
+  rights;
+- model the mandatory Association LN and SAP Assignment concepts enough for the
+  minimal server path.
+
+## 2. Normative Model
+
+Document RAG references:
+
+- Blue Book Association LN defines an `object_list` containing visible COSEM
+  objects with class id, version, logical name, and access rights.
+- Attribute access modes include no access, read only, write only, and read and
+  write; newer editions also define authenticated variants.
+- Method access modes include no access, access, and authenticated access.
+- A COSEM server contains logical devices; each logical device contains one or
+  more Association objects.
+- Each logical device shall expose a logical device name object and the current
+  Association object.
+- The management logical device contains a SAP Assignment object listing the SAP
+  of logical devices in the physical device; this object is readable at least by
+  the public client.
+
+## 3. First Implementation
+
+Version 1 implements a minimal in-memory LN object model:
+
+1. The caller creates a `LogicalDevice` with a logical-device SAP.
+2. The caller registers objects implementing `ICosemObject`.
+3. The caller reads attributes through the registry and receives encoded xDLMS
+   data bytes.
+4. The caller may write attributes or invoke methods if the object supports
+   those operations.
+5. The caller queries an association view containing object identifiers and
+   access rights.
+
+## 4. State Requirements
+
+The first implementation shall keep object ownership outside the registry.
+Objects are passed by reference and must outlive the registry/logical device.
+
+Rules:
+
+- duplicate object keys are rejected;
+- lookups are deterministic and do not allocate on failure;
+- access checks happen before object callback invocation;
+- unsupported attributes return `AttributeNotFound`;
+- unsupported methods return `MethodNotFound`;
+- access denial returns `AccessDenied`;
+- object callback failures are propagated as `ObjectError`;
+- no method mutates the registry while iterating association-view data.
+
+## 5. Data Boundary
+
+`dlms-cosem` stores and returns encoded xDLMS data bytes. It does not own typed
+projection of arbitrary COSEM data values yet. Typed value helpers may be added
+later when interface-class implementations need them.
+
+## 6. Out Of Scope
+
+- xDLMS APDU encode/decode;
+- GET/SET/ACTION request orchestration;
+- association opening, release, and authentication;
+- transport and profile channels;
+- cryptographic protection and invocation counters;
+- persistent storage;
+- complete Blue Book interface-class catalog;
+- short-name referencing;
+- public client and server facades.
