@@ -1,5 +1,6 @@
 #pragma once
 
+#include "dlms/cosem/cosem_access.hpp"
 #include "dlms/cosem/cosem_object.hpp"
 #include "dlms/cosem/cosem_status.hpp"
 #include "dlms/cosem/cosem_types.hpp"

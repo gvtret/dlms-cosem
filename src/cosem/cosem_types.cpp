@@ -67,6 +67,22 @@ CosemObjectDescriptor EmptyCosemObjectDescriptor()
   return descriptor;
 }
 
+CosemAttributeDescriptor EmptyCosemAttributeDescriptor()
+{
+  CosemAttributeDescriptor descriptor;
+  descriptor.object = EmptyCosemObjectKey();
+  descriptor.attributeId = 0u;
+  return descriptor;
+}
+
+CosemMethodDescriptor EmptyCosemMethodDescriptor()
+{
+  CosemMethodDescriptor descriptor;
+  descriptor.object = EmptyCosemObjectKey();
+  descriptor.methodId = 0u;
+  return descriptor;
+}
+
 CosemStatus ValidateObjectKey(const CosemObjectKey& key)
 {
   if (key.classId == 0u || key.logicalName.IsEmpty()) {
@@ -80,6 +96,30 @@ CosemStatus ValidateObjectDescriptor(
   const CosemObjectDescriptor& descriptor)
 {
   return ValidateObjectKey(descriptor.key);
+}
+
+CosemStatus ValidateAttributeDescriptor(
+  const CosemAttributeDescriptor& descriptor)
+{
+  const CosemStatus status = ValidateObjectKey(descriptor.object);
+  if (status != CosemStatus::Ok) {
+    return status;
+  }
+  return descriptor.attributeId == 0u
+    ? CosemStatus::InvalidArgument
+    : CosemStatus::Ok;
+}
+
+CosemStatus ValidateMethodDescriptor(
+  const CosemMethodDescriptor& descriptor)
+{
+  const CosemStatus status = ValidateObjectKey(descriptor.object);
+  if (status != CosemStatus::Ok) {
+    return status;
+  }
+  return descriptor.methodId == 0u
+    ? CosemStatus::InvalidArgument
+    : CosemStatus::Ok;
 }
 
 bool operator==(

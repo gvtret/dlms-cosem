@@ -10,12 +10,22 @@ const char* CosemStatusName(CosemStatus status)
     return "Ok";
   case CosemStatus::InvalidArgument:
     return "InvalidArgument";
-  case CosemStatus::AlreadyExists:
-    return "AlreadyExists";
-  case CosemStatus::NotFound:
-    return "NotFound";
-  case CosemStatus::NullObject:
-    return "NullObject";
+  case CosemStatus::DuplicateObject:
+    return "DuplicateObject";
+  case CosemStatus::ObjectNotFound:
+    return "ObjectNotFound";
+  case CosemStatus::AttributeNotFound:
+    return "AttributeNotFound";
+  case CosemStatus::MethodNotFound:
+    return "MethodNotFound";
+  case CosemStatus::AccessDenied:
+    return "AccessDenied";
+  case CosemStatus::OutputBufferTooSmall:
+    return "OutputBufferTooSmall";
+  case CosemStatus::UnsupportedFeature:
+    return "UnsupportedFeature";
+  case CosemStatus::ObjectError:
+    return "ObjectError";
   case CosemStatus::InternalError:
     return "InternalError";
   }

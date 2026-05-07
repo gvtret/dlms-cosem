@@ -11,7 +11,7 @@ CosemStatus ObjectRegistry::Register(
   const std::shared_ptr<ICosemObject>& object)
 {
   if (!object) {
-    return CosemStatus::NullObject;
+    return CosemStatus::InvalidArgument;
   }
 
   const CosemObjectDescriptor descriptor = object->Descriptor();
@@ -21,7 +21,7 @@ CosemStatus ObjectRegistry::Register(
   }
 
   if (objects_.find(descriptor.key) != objects_.end()) {
-    return CosemStatus::AlreadyExists;
+    return CosemStatus::DuplicateObject;
   }
 
   objects_[descriptor.key] = object;
@@ -60,6 +60,112 @@ std::vector<CosemObjectDescriptor> ObjectRegistry::Descriptors() const
 std::size_t ObjectRegistry::Size() const
 {
   return objects_.size();
+}
+
+CosemStatus ObjectRegistry::ReadAttribute(
+  const CosemAttributeDescriptor& descriptor,
+  CosemByteBuffer& output) const
+{
+  return ReadAttribute(descriptor, PublicAccessContext(), output);
+}
+
+CosemStatus ObjectRegistry::ReadAttribute(
+  const CosemAttributeDescriptor& descriptor,
+  const CosemAccessContext& context,
+  CosemByteBuffer& output) const
+{
+  const CosemStatus status = ValidateAttributeDescriptor(descriptor);
+  if (status != CosemStatus::Ok) {
+    return status;
+  }
+
+  const ICosemObject* object = Find(descriptor.object);
+  if (!object) {
+    return CosemStatus::ObjectNotFound;
+  }
+
+  if (!object->AccessRights().CanReadAttribute(
+        descriptor.attributeId, context)) {
+    return CosemStatus::AccessDenied;
+  }
+
+  CosemByteBuffer candidate;
+  const CosemStatus readStatus =
+    object->ReadAttribute(descriptor.attributeId, candidate);
+  if (readStatus == CosemStatus::Ok) {
+    output = candidate;
+  }
+  return readStatus;
+}
+
+CosemStatus ObjectRegistry::WriteAttribute(
+  const CosemAttributeDescriptor& descriptor,
+  const CosemByteBuffer& input)
+{
+  return WriteAttribute(descriptor, PublicAccessContext(), input);
+}
+
+CosemStatus ObjectRegistry::WriteAttribute(
+  const CosemAttributeDescriptor& descriptor,
+  const CosemAccessContext& context,
+  const CosemByteBuffer& input)
+{
+  const CosemStatus status = ValidateAttributeDescriptor(descriptor);
+  if (status != CosemStatus::Ok) {
+    return status;
+  }
+
+  std::map<CosemObjectKey, std::shared_ptr<ICosemObject> >::iterator it =
+    objects_.find(descriptor.object);
+  if (it == objects_.end()) {
+    return CosemStatus::ObjectNotFound;
+  }
+
+  if (!it->second->AccessRights().CanWriteAttribute(
+        descriptor.attributeId, context)) {
+    return CosemStatus::AccessDenied;
+  }
+
+  return it->second->WriteAttribute(descriptor.attributeId, input);
+}
+
+CosemStatus ObjectRegistry::InvokeMethod(
+  const CosemMethodDescriptor& descriptor,
+  const CosemByteBuffer& input,
+  CosemByteBuffer& output)
+{
+  return InvokeMethod(descriptor, PublicAccessContext(), input, output);
+}
+
+CosemStatus ObjectRegistry::InvokeMethod(
+  const CosemMethodDescriptor& descriptor,
+  const CosemAccessContext& context,
+  const CosemByteBuffer& input,
+  CosemByteBuffer& output)
+{
+  const CosemStatus status = ValidateMethodDescriptor(descriptor);
+  if (status != CosemStatus::Ok) {
+    return status;
+  }
+
+  std::map<CosemObjectKey, std::shared_ptr<ICosemObject> >::iterator it =
+    objects_.find(descriptor.object);
+  if (it == objects_.end()) {
+    return CosemStatus::ObjectNotFound;
+  }
+
+  if (!it->second->AccessRights().CanInvokeMethod(
+        descriptor.methodId, context)) {
+    return CosemStatus::AccessDenied;
+  }
+
+  CosemByteBuffer candidate;
+  const CosemStatus invokeStatus =
+    it->second->InvokeMethod(descriptor.methodId, input, candidate);
+  if (invokeStatus == CosemStatus::Ok) {
+    output = candidate;
+  }
+  return invokeStatus;
 }
 
 } // namespace cosem

@@ -21,6 +21,30 @@ public:
   std::vector<CosemObjectDescriptor> Descriptors() const;
   std::size_t Size() const;
 
+  CosemStatus ReadAttribute(
+    const CosemAttributeDescriptor& descriptor,
+    CosemByteBuffer& output) const;
+  CosemStatus ReadAttribute(
+    const CosemAttributeDescriptor& descriptor,
+    const CosemAccessContext& context,
+    CosemByteBuffer& output) const;
+  CosemStatus WriteAttribute(
+    const CosemAttributeDescriptor& descriptor,
+    const CosemByteBuffer& input);
+  CosemStatus WriteAttribute(
+    const CosemAttributeDescriptor& descriptor,
+    const CosemAccessContext& context,
+    const CosemByteBuffer& input);
+  CosemStatus InvokeMethod(
+    const CosemMethodDescriptor& descriptor,
+    const CosemByteBuffer& input,
+    CosemByteBuffer& output);
+  CosemStatus InvokeMethod(
+    const CosemMethodDescriptor& descriptor,
+    const CosemAccessContext& context,
+    const CosemByteBuffer& input,
+    CosemByteBuffer& output);
+
 private:
   std::map<CosemObjectKey, std::shared_ptr<ICosemObject> > objects_;
 };

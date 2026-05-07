@@ -7,9 +7,14 @@ enum class CosemStatus
 {
   Ok,
   InvalidArgument,
-  AlreadyExists,
-  NotFound,
-  NullObject,
+  DuplicateObject,
+  ObjectNotFound,
+  AttributeNotFound,
+  MethodNotFound,
+  AccessDenied,
+  OutputBufferTooSmall,
+  UnsupportedFeature,
+  ObjectError,
   InternalError
 };
 

@@ -44,11 +44,29 @@ struct CosemObjectDescriptor
   CosemObjectKey key;
 };
 
+struct CosemAttributeDescriptor
+{
+  CosemObjectKey object;
+  std::uint8_t attributeId;
+};
+
+struct CosemMethodDescriptor
+{
+  CosemObjectKey object;
+  std::uint8_t methodId;
+};
+
 CosemObjectKey EmptyCosemObjectKey();
 CosemObjectDescriptor EmptyCosemObjectDescriptor();
+CosemAttributeDescriptor EmptyCosemAttributeDescriptor();
+CosemMethodDescriptor EmptyCosemMethodDescriptor();
 CosemStatus ValidateObjectKey(const CosemObjectKey& key);
 CosemStatus ValidateObjectDescriptor(
   const CosemObjectDescriptor& descriptor);
+CosemStatus ValidateAttributeDescriptor(
+  const CosemAttributeDescriptor& descriptor);
+CosemStatus ValidateMethodDescriptor(
+  const CosemMethodDescriptor& descriptor);
 
 bool operator==(
   const CosemLogicalName& lhs,
