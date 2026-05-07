@@ -10,6 +10,7 @@ elseif(NOT TARGET GTest::gtest_main)
 endif()
 
 add_executable(dlms_cosem_tests
+  cosem/test_logical_device.cpp
   cosem/test_object_registry.cpp)
 
 target_link_libraries(dlms_cosem_tests
