@@ -6,3 +6,4 @@
 #include "dlms/cosem/cosem_types.hpp"
 #include "dlms/cosem/logical_device.hpp"
 #include "dlms/cosem/object_registry.hpp"
+#include "dlms/cosem/simple_objects.hpp"
