@@ -84,3 +84,35 @@ Commit message:
 ```text
 build: add dlms-cosem submodule
 ```
+
+## Phase 5. Simple Interface Objects Documentation
+
+Deliverables:
+
+- Data and Register object requirements;
+- public API contract for `simple_objects.hpp`;
+- architecture and class interaction diagrams;
+- focused unit test plan.
+
+Commit message:
+
+```text
+docs(cosem): define simple interface objects
+```
+
+## Phase 6. Simple Interface Objects Implementation
+
+Deliverables:
+
+- `CosemDataObject`;
+- `CosemRegisterObject`;
+- logical-name attribute encoding;
+- value and scaler-unit attribute handling;
+- method and unsupported-attribute rejection;
+- focused unit tests.
+
+Commit message:
+
+```text
+feat(cosem): add simple interface objects
+```

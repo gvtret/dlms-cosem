@@ -71,7 +71,33 @@ Rules:
 projection of arbitrary COSEM data values yet. Typed value helpers may be added
 later when interface-class implementations need them.
 
-## 6. Out Of Scope
+## 6. Simple Interface Objects
+
+The next implementation increment shall add reusable in-memory COSEM interface
+objects for the common MVP object model:
+
+- Data, class id `1`, version `0`;
+- Register, class id `3`, version `0`.
+
+Rules:
+
+- both objects expose attribute `1` as the logical name encoded as xDLMS Data
+  octet-string bytes;
+- Data exposes attribute `2` as the stored encoded value;
+- Register exposes attribute `2` as the stored encoded value;
+- Register exposes attribute `3` as stored encoded scaler-unit bytes;
+- writes to value attributes update the stored encoded bytes when access rights
+  permit writes;
+- writes to logical name are rejected;
+- methods are not implemented in this increment and return `MethodNotFound`;
+- constructors initialize descriptors and explicit access rights; existing
+  registry descriptor validation rejects invalid logical names during
+  registration.
+
+This phase intentionally stores caller-provided encoded xDLMS Data bytes. It
+does not introduce a typed COSEM value hierarchy.
+
+## 7. Out Of Scope
 
 - xDLMS APDU encode/decode;
 - GET/SET/ACTION request orchestration;
@@ -80,5 +106,7 @@ later when interface-class implementations need them.
 - cryptographic protection and invocation counters;
 - persistent storage;
 - complete Blue Book interface-class catalog;
+- typed COSEM value model;
+- Profile Generic capture objects;
 - short-name referencing;
 - public client and server facades.

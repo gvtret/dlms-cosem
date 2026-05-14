@@ -108,3 +108,50 @@ avoids prescribing allocation policy before persistent object storage exists.
 The layer returns status codes only. Runtime API paths do not throw exceptions.
 Object implementation failures are normalized to `ObjectError` unless they map
 to a specific COSEM status.
+
+## 7. Simple Interface Objects
+
+```mermaid
+sequenceDiagram
+  participant Server as dlms-server
+  participant Registry as ObjectRegistry
+  participant Object as CosemDataObject or CosemRegisterObject
+
+  Server->>Registry: ReadAttribute(attribute descriptor)
+  Registry->>Registry: Check object and access rights
+  Registry->>Object: ReadAttribute(attributeId)
+  Object-->>Registry: encoded xDLMS Data bytes
+  Registry-->>Server: CosemStatus::Ok and bytes
+```
+
+The concrete objects stay inside `dlms-cosem` and implement only stable COSEM
+interface-class behavior. They do not depend on `dlms-apdu`, `dlms-xdlms`, or
+`dlms-server`; all attribute values remain encoded xDLMS Data byte vectors at
+the layer boundary.
+
+```mermaid
+classDiagram
+  class ICosemObject {
+    +Descriptor()
+    +AccessRights()
+    +ReadAttribute()
+    +WriteAttribute()
+    +InvokeMethod()
+  }
+
+  class CosemDataObject {
+    +ReadAttribute(1 logical_name)
+    +ReadAttribute(2 value)
+    +WriteAttribute(2 value)
+  }
+
+  class CosemRegisterObject {
+    +ReadAttribute(1 logical_name)
+    +ReadAttribute(2 value)
+    +ReadAttribute(3 scaler_unit)
+    +WriteAttribute(2 value)
+  }
+
+  ICosemObject <|-- CosemDataObject
+  ICosemObject <|-- CosemRegisterObject
+```

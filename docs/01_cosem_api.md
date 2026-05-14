@@ -10,6 +10,7 @@ include/dlms/cosem/cosem_types.hpp
 include/dlms/cosem/cosem_object.hpp
 include/dlms/cosem/object_registry.hpp
 include/dlms/cosem/logical_device.hpp
+include/dlms/cosem/simple_objects.hpp
 ```
 
 No C ABI is planned for the first implementation.
@@ -151,4 +152,78 @@ classDiagram
   LogicalDevice --> ObjectRegistry
   ObjectRegistry --> ICosemObject
   ICosemObject --> CosemAccessRights
+```
+
+## 8. Simple Interface Objects
+
+`simple_objects.hpp` adds reusable in-memory implementations for the first
+concrete COSEM interface classes:
+
+```cpp
+class CosemDataObject : public ICosemObject
+{
+public:
+  CosemDataObject(
+    const CosemLogicalName& logicalName,
+    const CosemByteBuffer& value,
+    AttributeAccessMode valueAccess);
+
+  const CosemByteBuffer& Value() const;
+  void SetValue(const CosemByteBuffer& value);
+};
+
+class CosemRegisterObject : public ICosemObject
+{
+public:
+  CosemRegisterObject(
+    const CosemLogicalName& logicalName,
+    const CosemByteBuffer& value,
+    const CosemByteBuffer& scalerUnit,
+    AttributeAccessMode valueAccess);
+
+  const CosemByteBuffer& Value() const;
+  const CosemByteBuffer& ScalerUnit() const;
+  void SetValue(const CosemByteBuffer& value);
+  void SetScalerUnit(const CosemByteBuffer& scalerUnit);
+};
+```
+
+The constructors create descriptors with class ids `1` and `3`, version `0`.
+Attribute `1` is read-only logical name. Attribute `2` is the value. Register
+attribute `3` is read-only scaler-unit. Methods are not supported in this
+increment.
+
+```mermaid
+classDiagram
+  class ICosemObject {
+    +Descriptor()
+    +AccessRights()
+    +ReadAttribute()
+    +WriteAttribute()
+    +InvokeMethod()
+  }
+
+  class CosemDataObject {
+    -CosemObjectDescriptor descriptor
+    -CosemByteBuffer value
+    -CosemAccessRights rights
+    +Value()
+    +SetValue()
+  }
+
+  class CosemRegisterObject {
+    -CosemObjectDescriptor descriptor
+    -CosemByteBuffer value
+    -CosemByteBuffer scalerUnit
+    -CosemAccessRights rights
+    +Value()
+    +ScalerUnit()
+    +SetValue()
+    +SetScalerUnit()
+  }
+
+  ICosemObject <|-- CosemDataObject
+  ICosemObject <|-- CosemRegisterObject
+  CosemDataObject --> CosemAccessRights
+  CosemRegisterObject --> CosemAccessRights
 ```

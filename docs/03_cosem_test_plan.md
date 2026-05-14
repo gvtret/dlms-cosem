@@ -31,6 +31,21 @@ Phase 3 logical-device tests:
 - management device can expose SAP assignment metadata;
 - association LN metadata can expose visible object list data.
 
+Phase 5 simple interface object tests:
+
+- Data object descriptor uses class id `1`, version `0`, and the configured
+  logical name;
+- Data attribute `1` returns encoded logical-name bytes;
+- Data attribute `2` returns and writes the stored encoded value according to
+  access rights;
+- Register object descriptor uses class id `3`, version `0`, and the
+  configured logical name;
+- Register attribute `2` returns and writes the stored encoded value;
+- Register attribute `3` returns the stored scaler-unit bytes;
+- unsupported attributes return `AttributeNotFound`;
+- methods return `MethodNotFound`;
+- invalid logical names are rejected by existing registry descriptor validation.
+
 ## 2. Integration Tests
 
 Root integration is deferred until `dlms-server` exists. The first integration
