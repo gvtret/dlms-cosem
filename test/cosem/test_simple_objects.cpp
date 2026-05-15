@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include <memory>
+#include <string>
 
 namespace {
 
@@ -51,6 +52,18 @@ void AppendOctetString(
   for (std::size_t i = 0; i < name.Size(); ++i) {
     bytes.push_back(name[i]);
   }
+}
+
+dlms::cosem::CosemByteBuffer EncodedOctetString(
+  const std::string& value)
+{
+  dlms::cosem::CosemByteBuffer bytes;
+  bytes.push_back(0x09u);
+  bytes.push_back(static_cast<std::uint8_t>(value.size()));
+  for (std::size_t i = 0; i < value.size(); ++i) {
+    bytes.push_back(static_cast<std::uint8_t>(value[i]));
+  }
+  return bytes;
 }
 
 dlms::cosem::CosemAttributeDescriptor MakeAttribute(
@@ -324,6 +337,36 @@ TEST(CosemAssociationLnObject, ExposesDescriptorAndObjectList)
   expected.push_back(0x16u);
   expected.push_back(0x01u);
   EXPECT_EQ(expected, output);
+}
+
+TEST(LogicalDeviceNameObject, BuildsReadOnlyDataObject)
+{
+  dlms::cosem::CosemDataObject object =
+    dlms::cosem::MakeLogicalDeviceNameObject("ld-1");
+
+  const dlms::cosem::CosemObjectDescriptor descriptor =
+    object.Descriptor();
+  EXPECT_EQ(1u, descriptor.key.classId);
+  EXPECT_EQ(0u, descriptor.key.version);
+  EXPECT_EQ(dlms::cosem::LogicalDeviceNameObjectName(),
+            descriptor.key.logicalName);
+
+  dlms::cosem::CosemByteBuffer output;
+  ASSERT_EQ(dlms::cosem::CosemStatus::Ok,
+            object.ReadAttribute(1u, output));
+  EXPECT_EQ(EncodedLogicalName(dlms::cosem::LogicalDeviceNameObjectName()),
+            output);
+
+  output.clear();
+  ASSERT_EQ(dlms::cosem::CosemStatus::Ok,
+            object.ReadAttribute(2u, output));
+  EXPECT_EQ(EncodedOctetString("ld-1"), output);
+
+  const dlms::cosem::CosemAccessRights rights = object.AccessRights();
+  EXPECT_EQ(dlms::cosem::AttributeAccessMode::ReadOnly,
+            rights.AttributeAccess(1u));
+  EXPECT_EQ(dlms::cosem::AttributeAccessMode::ReadOnly,
+            rights.AttributeAccess(2u));
 }
 
 TEST(CosemSapAssignmentObject, ExposesDescriptorAndAssignments)

@@ -72,6 +72,8 @@ private:
 CosemLogicalName CurrentAssociationLnName();
 CosemLogicalName SapAssignmentName();
 CosemLogicalName LogicalDeviceNameObjectName();
+CosemDataObject MakeLogicalDeviceNameObject(
+  const std::string& logicalDeviceName);
 
 class CosemAssociationLnObject : public ICosemObject
 {

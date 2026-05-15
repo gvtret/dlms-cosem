@@ -199,6 +199,20 @@ CosemLogicalName LogicalDeviceNameObjectName()
   return CosemLogicalName(0u, 0u, 42u, 0u, 0u, 255u);
 }
 
+CosemDataObject MakeLogicalDeviceNameObject(
+  const std::string& logicalDeviceName)
+{
+  CosemByteBuffer value;
+  AppendOctetString(
+    value,
+    reinterpret_cast<const std::uint8_t*>(logicalDeviceName.data()),
+    logicalDeviceName.size());
+  return CosemDataObject(
+    LogicalDeviceNameObjectName(),
+    value,
+    AttributeAccessMode::ReadOnly);
+}
+
 CosemDataObject::CosemDataObject(
   const CosemLogicalName& logicalName,
   const CosemByteBuffer& value,
