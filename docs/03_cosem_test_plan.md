@@ -46,6 +46,21 @@ Phase 5 simple interface object tests:
 - methods return `MethodNotFound`;
 - invalid logical names are rejected by existing registry descriptor validation.
 
+Phase 7 association and SAP object tests:
+
+- Association LN descriptor uses class id `15`, version `0`, and OBIS
+  `0.0.40.0.0.255` for the helper default;
+- Association LN attribute `1` returns encoded logical-name bytes;
+- Association LN attribute `2` returns an encoded array of visible objects;
+- object-list entries include class id, version, logical name, attribute access
+  descriptors, and method access descriptors;
+- SAP Assignment descriptor uses class id `17`, version `0`, and OBIS
+  `0.0.41.0.0.255` for the helper default;
+- SAP Assignment attribute `2` returns an encoded array of SAP/name pairs;
+- logical-device name helper returns OBIS `0.0.42.0.0.255`;
+- writes are denied by registry access checks;
+- methods return `MethodNotFound`.
+
 ## 2. Integration Tests
 
 Root integration is deferred until `dlms-server` exists. The first integration

@@ -116,3 +116,34 @@ Commit message:
 ```text
 feat(cosem): add simple interface objects
 ```
+
+## Phase 7. Association And SAP Objects Documentation
+
+Deliverables:
+
+- Association LN and SAP Assignment requirements;
+- public API contract and helper logical-name functions;
+- architecture diagrams for discovery object reads;
+- focused unit test plan.
+
+Commit message:
+
+```text
+docs(cosem): define association discovery objects
+```
+
+## Phase 8. Association And SAP Objects Implementation
+
+Deliverables:
+
+- `CosemAssociationLnObject`;
+- `CosemSapAssignmentObject`;
+- default logical-name helper functions;
+- encoded xDLMS Data array output for object lists and SAP assignments;
+- focused unit tests.
+
+Commit message:
+
+```text
+feat(cosem): add association discovery objects
+```

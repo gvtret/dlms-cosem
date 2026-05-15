@@ -97,7 +97,38 @@ Rules:
 This phase intentionally stores caller-provided encoded xDLMS Data bytes. It
 does not introduce a typed COSEM value hierarchy.
 
-## 7. Out Of Scope
+## 7. Association And SAP Objects
+
+The next implementation increment shall add minimal read-only concrete objects
+for mandatory server model discovery:
+
+- Association LN, class id `15`, version `0`;
+- SAP Assignment, class id `17`, version `0`;
+- Logical Device Name as a Data object at OBIS `0.0.42.0.0.255`.
+
+Rules:
+
+- Association LN attribute `1` returns its logical name as encoded xDLMS Data
+  octet-string bytes;
+- Association LN attribute `2` returns `object_list` as encoded xDLMS Data
+  array bytes;
+- each object-list element contains class id, version, logical name, and
+  access-right descriptors for one visible object;
+- SAP Assignment attribute `1` returns its logical name as encoded xDLMS Data
+  octet-string bytes;
+- SAP Assignment attribute `2` returns `SAP_assignment_list` as encoded xDLMS
+  Data array bytes;
+- each SAP assignment element contains the logical-device SAP and logical-device
+  name as an octet-string;
+- the objects are read-only in this increment;
+- methods such as Association LN HLS methods, add/remove object, and SAP
+  `connect_logical_device` remain out of scope.
+
+The encoded byte layout is intentionally produced inside `dlms-cosem` without
+depending on `dlms-apdu`; it follows the same xDLMS Data tag values used by the
+APDU layer.
+
+## 8. Out Of Scope
 
 - xDLMS APDU encode/decode;
 - GET/SET/ACTION request orchestration;
@@ -108,5 +139,7 @@ does not introduce a typed COSEM value hierarchy.
 - complete Blue Book interface-class catalog;
 - typed COSEM value model;
 - Profile Generic capture objects;
+- Association LN selective access and methods;
+- SAP Assignment connect method;
 - short-name referencing;
 - public client and server facades.

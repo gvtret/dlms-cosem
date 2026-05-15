@@ -155,3 +155,29 @@ classDiagram
   ICosemObject <|-- CosemDataObject
   ICosemObject <|-- CosemRegisterObject
 ```
+
+## 8. Association And SAP Discovery Objects
+
+```mermaid
+sequenceDiagram
+  participant Server as dlms-server
+  participant Registry as ObjectRegistry
+  participant Association as CosemAssociationLnObject
+  participant Sap as CosemSapAssignmentObject
+
+  Server->>Registry: Read Association LN attribute 2
+  Registry->>Association: ReadAttribute(object_list)
+  Association-->>Registry: encoded object_list array
+  Registry-->>Server: CosemStatus::Ok and bytes
+
+  Server->>Registry: Read SAP Assignment attribute 2
+  Registry->>Sap: ReadAttribute(SAP_assignment_list)
+  Sap-->>Registry: encoded SAP assignment array
+  Registry-->>Server: CosemStatus::Ok and bytes
+```
+
+The discovery objects are snapshots. They receive `AssociationView` or
+`SapAssignment` data from the owning logical or physical device and expose those
+bytes through normal `ICosemObject` reads. Updating the object list after
+registration requires constructing or refreshing the object explicitly; the
+minimal object does not hold a mutable back-reference to the registry.

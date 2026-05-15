@@ -193,6 +193,34 @@ Attribute `1` is read-only logical name. Attribute `2` is the value. Register
 attribute `3` is read-only scaler-unit. Methods are not supported in this
 increment.
 
+The same header also adds minimal discovery objects:
+
+```cpp
+class CosemAssociationLnObject : public ICosemObject
+{
+public:
+  CosemAssociationLnObject(
+    const CosemLogicalName& logicalName,
+    const AssociationView& objectList);
+};
+
+class CosemSapAssignmentObject : public ICosemObject
+{
+public:
+  CosemSapAssignmentObject(
+    const CosemLogicalName& logicalName,
+    const std::vector<SapAssignment>& assignments);
+};
+
+CosemLogicalName CurrentAssociationLnName();
+CosemLogicalName SapAssignmentName();
+CosemLogicalName LogicalDeviceNameObjectName();
+```
+
+Association LN exposes read-only attributes `1` and `2`. SAP Assignment exposes
+read-only attributes `1` and `2`. Their list attributes are returned as encoded
+xDLMS Data array bytes and methods are not supported in this increment.
+
 ```mermaid
 classDiagram
   class ICosemObject {
@@ -222,8 +250,28 @@ classDiagram
     +SetScalerUnit()
   }
 
+  class CosemAssociationLnObject {
+    -CosemObjectDescriptor descriptor
+    -AssociationView objectList
+    -CosemAccessRights rights
+    +ReadAttribute(1 logical_name)
+    +ReadAttribute(2 object_list)
+  }
+
+  class CosemSapAssignmentObject {
+    -CosemObjectDescriptor descriptor
+    -vector assignments
+    -CosemAccessRights rights
+    +ReadAttribute(1 logical_name)
+    +ReadAttribute(2 SAP_assignment_list)
+  }
+
   ICosemObject <|-- CosemDataObject
   ICosemObject <|-- CosemRegisterObject
+  ICosemObject <|-- CosemAssociationLnObject
+  ICosemObject <|-- CosemSapAssignmentObject
   CosemDataObject --> CosemAccessRights
   CosemRegisterObject --> CosemAccessRights
+  CosemAssociationLnObject --> AssociationView
+  CosemSapAssignmentObject --> SapAssignment
 ```
