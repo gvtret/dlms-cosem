@@ -4,6 +4,7 @@
 
 #include <map>
 #include <cstdint>
+#include <vector>
 
 namespace dlms {
 namespace cosem {
@@ -26,6 +27,18 @@ enum class MethodAccessMode
   AuthenticatedAccess
 };
 
+struct AttributeAccessEntry
+{
+  std::uint8_t attributeId;
+  AttributeAccessMode mode;
+};
+
+struct MethodAccessEntry
+{
+  std::uint8_t methodId;
+  MethodAccessMode mode;
+};
+
 struct CosemAccessContext
 {
   bool authenticated;
@@ -43,6 +56,8 @@ public:
 
   AttributeAccessMode AttributeAccess(std::uint8_t attributeId) const;
   MethodAccessMode MethodAccess(std::uint8_t methodId) const;
+  std::vector<AttributeAccessEntry> AttributeAccessEntries() const;
+  std::vector<MethodAccessEntry> MethodAccessEntries() const;
 
   bool CanReadAttribute(
     std::uint8_t attributeId,

@@ -87,6 +87,38 @@ MethodAccessMode CosemAccessRights::MethodAccess(
     : it->second;
 }
 
+std::vector<AttributeAccessEntry>
+CosemAccessRights::AttributeAccessEntries() const
+{
+  std::vector<AttributeAccessEntry> entries;
+  for (std::map<std::uint8_t, AttributeAccessMode>::const_iterator it =
+         attributeAccess_.begin();
+       it != attributeAccess_.end();
+       ++it) {
+    AttributeAccessEntry entry;
+    entry.attributeId = it->first;
+    entry.mode = it->second;
+    entries.push_back(entry);
+  }
+  return entries;
+}
+
+std::vector<MethodAccessEntry>
+CosemAccessRights::MethodAccessEntries() const
+{
+  std::vector<MethodAccessEntry> entries;
+  for (std::map<std::uint8_t, MethodAccessMode>::const_iterator it =
+         methodAccess_.begin();
+       it != methodAccess_.end();
+       ++it) {
+    MethodAccessEntry entry;
+    entry.methodId = it->first;
+    entry.mode = it->second;
+    entries.push_back(entry);
+  }
+  return entries;
+}
+
 bool CosemAccessRights::CanReadAttribute(
   std::uint8_t attributeId,
   const CosemAccessContext& context) const

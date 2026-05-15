@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dlms/cosem/cosem_object.hpp"
+#include "dlms/cosem/logical_device.hpp"
 
 namespace dlms {
 namespace cosem {
@@ -66,6 +66,66 @@ private:
   CosemObjectDescriptor descriptor_;
   CosemByteBuffer value_;
   CosemByteBuffer scalerUnit_;
+  CosemAccessRights rights_;
+};
+
+CosemLogicalName CurrentAssociationLnName();
+CosemLogicalName SapAssignmentName();
+CosemLogicalName LogicalDeviceNameObjectName();
+
+class CosemAssociationLnObject : public ICosemObject
+{
+public:
+  CosemAssociationLnObject(
+    const CosemLogicalName& logicalName,
+    const AssociationView& objectList);
+
+  CosemObjectDescriptor Descriptor() const;
+  CosemAccessRights AccessRights() const;
+  CosemStatus ReadAttribute(
+    std::uint8_t attributeId,
+    CosemByteBuffer& output) const;
+  CosemStatus WriteAttribute(
+    std::uint8_t attributeId,
+    const CosemByteBuffer& input);
+  CosemStatus InvokeMethod(
+    std::uint8_t methodId,
+    const CosemByteBuffer& input,
+    CosemByteBuffer& output);
+
+  AssociationView ObjectList() const;
+
+private:
+  CosemObjectDescriptor descriptor_;
+  AssociationView objectList_;
+  CosemAccessRights rights_;
+};
+
+class CosemSapAssignmentObject : public ICosemObject
+{
+public:
+  CosemSapAssignmentObject(
+    const CosemLogicalName& logicalName,
+    const std::vector<SapAssignment>& assignments);
+
+  CosemObjectDescriptor Descriptor() const;
+  CosemAccessRights AccessRights() const;
+  CosemStatus ReadAttribute(
+    std::uint8_t attributeId,
+    CosemByteBuffer& output) const;
+  CosemStatus WriteAttribute(
+    std::uint8_t attributeId,
+    const CosemByteBuffer& input);
+  CosemStatus InvokeMethod(
+    std::uint8_t methodId,
+    const CosemByteBuffer& input,
+    CosemByteBuffer& output);
+
+  std::vector<SapAssignment> Assignments() const;
+
+private:
+  CosemObjectDescriptor descriptor_;
+  std::vector<SapAssignment> assignments_;
   CosemAccessRights rights_;
 };
 
